@@ -1,19 +1,43 @@
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Navbar } from "./components/nav-bar";
 import Home from "./pages/home";
-import Categories from "./pages/categories";
 import Favorites from "./pages/favorites";
+import { Navbar } from "./components/nav-bar";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ICardProps } from "./components/pokemon-card";
 
 function App() {
+  const [favorites, setFavorites] = useState<ICardProps[]>([]);
+
+  useEffect(() => {
+    const data = localStorage.getItem("favorites");
+    if (data !== null) {
+      setFavorites(JSON.parse(data));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
+  const handleFavorite = (newFavorite: ICardProps) => {
+    console.log("I have been invoked!");
+    setFavorites((prev) => [...prev, newFavorite]);
+  };
+
   return (
     <>
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/" index element={<Home />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/favorites" element={<Favorites />} />
+          <Route
+            path="/"
+            index
+            element={<Home handleFavorite={handleFavorite} />}
+          />
+          <Route
+            path="/favorites"
+            element={<Favorites favorites={favorites} />}
+          />
         </Routes>
       </BrowserRouter>
     </>

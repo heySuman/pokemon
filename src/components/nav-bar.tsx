@@ -12,9 +12,6 @@ export const Navbar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/categories">Categories</NavLink>
-            </li>
-            <li>
               <NavLink to="/favorites">Favorites</NavLink>
             </li>
           </ul>

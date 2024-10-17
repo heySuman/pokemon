@@ -4,7 +4,7 @@ import PokemonCard from "../components/pokemon-card";
 interface pokeData {
   name: string;
   order: number;
-  abilitites: [
+  abilities: [
     {
       ability: {
         name: string;
@@ -19,9 +19,12 @@ interface pokeData {
       };
     };
   };
+  cries: {
+    latest: string;
+  };
 }
 
-export default function Home() {
+export default function Home({ handleFavorite }) {
   const [pokemon, setPokemon] = useState<string>("");
   const [data, setData] = useState<pokeData>();
 
@@ -31,9 +34,18 @@ export default function Home() {
   ) {
     event?.preventDefault();
     if (pokemon !== "") {
-      fetch("https://pokeapi.co/api/v2/pokemon/" + pokemon)
-        .then((res) => res.json())
-        .then((data) => setData(data));
+      fetch("https://pokeapi.co/api/v2/pokemon/" + pokemon.toLowerCase())
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          throw new Error("Not Found");
+        })
+        .then((data) => setData(data))
+        .catch((error) => {
+          console.log(error);
+          alert("Pokemon Not Found");
+        });
     }
   }
 
@@ -42,7 +54,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <main>
       <form
         onSubmit={(e: React.ChangeEvent<HTMLFormElement>) =>
           fetchData(pokemon, e)
@@ -64,8 +76,11 @@ export default function Home() {
           image={data.sprites.other.home.front_default}
           key={data.order}
           name={data.name}
+          soundURL={data.cries.latest}
+          abilities={data.abilities}
+          handleFavorite={handleFavorite}
         />
       )}
-    </div>
+    </main>
   );
 }
