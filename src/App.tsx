@@ -3,10 +3,10 @@ import Favorites from "./pages/favorites";
 import { Navbar } from "./components/nav-bar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ICardProps } from "./components/pokemon-card";
+import { IPokeInfo } from "./components/pokemon-card";
 
 function App() {
-  const [favorites, setFavorites] = useState<ICardProps[]>([]);
+  const [favorites, setFavorites] = useState<IPokeInfo[]>([]);
 
   useEffect(() => {
     const data = localStorage.getItem("favorites");
@@ -19,8 +19,7 @@ function App() {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
-  const handleFavorite = (newFavorite: ICardProps) => {
-    console.log("I have been invoked!");
+  const handleFavorite = (newFavorite: IPokeInfo) => {
     setFavorites((prev) => [...prev, newFavorite]);
   };
 

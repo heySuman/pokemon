@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PokemonCard from "../components/pokemon-card";
+import PokemonCard, { IPokeInfo } from "../components/pokemon-card";
 
 interface pokeData {
   name: string;
@@ -24,7 +24,11 @@ interface pokeData {
   };
 }
 
-export default function Home({ handleFavorite }) {
+export default function Home({
+  handleFavorite,
+}: {
+  handleFavorite: (newFav: IPokeInfo) => void;
+}) {
   const [pokemon, setPokemon] = useState<string>("");
   const [data, setData] = useState<pokeData>();
 
