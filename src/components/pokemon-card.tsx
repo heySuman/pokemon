@@ -41,7 +41,10 @@ export default function PokemonCard({
       <button onClick={() => playSound()}>Play Sound</button>
       <h3>Abilities</h3>
       <div className="abilities">
-        {abilities && abilities.map((i) => <span>{i.ability.name}</span>)}
+        {abilities &&
+          abilities.map((i) => (
+            <span key={i.ability.name}>{i.ability.name}</span>
+          ))}
       </div>
     </div>
   );

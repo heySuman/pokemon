@@ -1,36 +1,16 @@
 import { useState } from "react";
 import PokemonCard, { IPokeInfo } from "../components/pokemon-card";
 
-interface pokeData {
-  name: string;
-  order: number;
-  abilities: [
-    {
-      ability: {
-        name: string;
-        url: string;
-      };
-    }
-  ];
-  sprites: {
-    other: {
-      home: {
-        front_default: string;
-      };
-    };
-  };
-  cries: {
-    latest: string;
-  };
-}
-
 export default function Home({
   handleFavorite,
+  favorites,
 }: {
   handleFavorite: (newFav: IPokeInfo) => void;
+  favorites: IPokeInfo[];
 }) {
   const [pokemon, setPokemon] = useState<string>("");
-  const [data, setData] = useState<pokeData>();
+  const [data, setData] = useState<IPokeInfo>();
+  const [loading, setLoading] = useState(false);
 
   function fetchData(
     pokemon: string,
@@ -38,18 +18,36 @@ export default function Home({
   ) {
     event?.preventDefault();
     if (pokemon !== "") {
-      fetch("https://pokeapi.co/api/v2/pokemon/" + pokemon.toLowerCase())
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          throw new Error("Not Found");
-        })
-        .then((data) => setData(data))
-        .catch((error) => {
-          console.log(error);
-          alert("Pokemon Not Found");
-        });
+      setLoading(true);
+      // check if the favorite already has the pokemon as for working with the cache
+      if (favorites.filter((i) => pokemon === i.name).length > 0) {
+        console.log("from the localStorage");
+        setData(favorites.filter((i) => pokemon === i.name)[0]);
+        setLoading(false);
+      } else {
+        fetch("https://pokeapi.co/api/v2/pokemon/" + pokemon.toLowerCase())
+          .then((res) => {
+            if (res.ok) {
+              return res.json();
+            }
+            throw new Error("Not Found");
+          })
+          .then((data) =>
+            setData({
+              name: data.name,
+              image: data.sprites.other.home.front_default,
+              abilities: data.abilities,
+              soundURL: data.cries.latest,
+            })
+          )
+          .catch((error) => {
+            console.log(error);
+            alert("Pokemon Not Found");
+          })
+          .finally(() => setLoading(false));
+      }
+    } else {
+      alert("please enter the pokemon name");
     }
   }
 
@@ -72,15 +70,17 @@ export default function Home({
           value={pokemon}
           onChange={handleInputChange}
         />
-        <button type="submit">Search</button>
+        <button type="submit" disabled={loading}>
+          Search
+        </button>
       </form>
 
       {data && (
         <PokemonCard
-          image={data.sprites.other.home.front_default}
-          key={data.order}
+          image={data.image}
+          key={data.name}
+          soundURL={data.soundURL}
           name={data.name}
-          soundURL={data.cries.latest}
           abilities={data.abilities}
           handleFavorite={handleFavorite}
         />

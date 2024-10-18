@@ -16,11 +16,19 @@ function App() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("favorites", JSON.stringify(favorites));
+    if (favorites?.length > 0) {
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+    }
   }, [favorites]);
 
   const handleFavorite = (newFavorite: IPokeInfo) => {
+    alert(`${newFavorite.name} added to the favorite`);
     setFavorites((prev) => [...prev, newFavorite]);
+  };
+
+  const handleRemoveFavorite = (name: string) => {
+    alert(`${name} removed from the favorite`);
+    setFavorites(favorites.filter((i) => i.name !== name));
   };
 
   return (
@@ -31,11 +39,18 @@ function App() {
           <Route
             path="/"
             index
-            element={<Home handleFavorite={handleFavorite} />}
+            element={
+              <Home handleFavorite={handleFavorite} favorites={favorites} />
+            }
           />
           <Route
             path="/favorites"
-            element={<Favorites favorites={favorites} />}
+            element={
+              <Favorites
+                favorites={favorites}
+                handleRemoveFavorite={handleRemoveFavorite}
+              />
+            }
           />
         </Routes>
       </BrowserRouter>
