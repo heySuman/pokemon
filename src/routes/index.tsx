@@ -31,7 +31,7 @@ function App() {
     <main className="container p-4 space-y-4 mx-auto">
 
       {/* Searchbar */}
-      <Field className="max-w-lg mx-auto sticky top-0 z-100">
+      <Field className="max-w-lg mx-auto">
         <InputGroup>
           <InputGroupInput id="pokemon-search" placeholder="pikachu" className="" />
           <InputGroupAddon align="inline-start">
