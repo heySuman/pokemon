@@ -1,6 +1,6 @@
 import { Badge } from "../ui/badge"
 import { SkeletonCard } from "./loading-card"
-import { usePokemon } from "@/hooks/use-pokemon-grid"
+import { usePokemon } from "@/hooks/use-pokemon"
 import { Card, CardAction, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface PokemonCardProps {

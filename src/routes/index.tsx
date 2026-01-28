@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { Field } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 import { createFileRoute } from "@tanstack/react-router";
-import { usePokemonGrid } from "@/hooks/use-pokemon-grid";
+import { usePokemonGrid } from "@/hooks/use-pokemon";
 import PokemonCard from "@/components/landing-page/pokemon-card";
 import { PaginationCustom as Pagination } from "@/components/landing-page/pagination";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
