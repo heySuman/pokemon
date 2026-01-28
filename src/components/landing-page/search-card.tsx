@@ -1,47 +1,24 @@
-import { Badge } from "../ui/badge"
-import { SkeletonCard } from "./loading-card"
-import { typeColors } from "@/lib/pokemon-type"
-import { usePokemon } from "@/hooks/use-pokemon"
+import { PokemonDTO } from "@/types/pokemon";
+import { Badge } from "@/components/ui/badge";
+import { typeColors } from "@/lib/pokemon-type";
 import { Item, ItemContent, ItemDescription, ItemTitle } from "../ui/item"
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardAction, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 
-interface PokemonCardProps {
-    name: string,
-    url: string
-}
-
-export default function PokemonCard({ name, url }: PokemonCardProps) {
-    const { data, isLoading, error } = usePokemon({ name, url });
-
-    if (isLoading) return <SkeletonCard />
-
-    if (error) {
-        return (
-            <Card className="relative mx-auto w-full max-w-sm pt-0 overflow-hidden bg-accent/40">
-                <CardHeader>
-                    <CardTitle className="text-destructive">Error loading {name}</CardTitle>
-                    <p className="text-sm text-muted-foreground">Failed to load Pokemon data</p>
-                </CardHeader>
-            </Card>
-        )
-    }
-
-    if (!data) return null;
-
+export default function SearchCard({ pokemon }: { pokemon: PokemonDTO }) {
     return (
-        <Card className="relative mx-auto w-full overflow-hidden bg-accent/40">
+        <Card className="relative mx-auto w-full overflow-hidden bg-accent/40 max-w-sm">
             <img
-                src={data.sprites.other?.dream_world?.front_default || data.sprites.front_default || '/logo512.png'}
-                alt={data.name}
+                src={pokemon.sprites.other?.dream_world?.front_default || pokemon.sprites.front_default || '/logo512.png'}
+                alt={pokemon.name}
                 className="p-4 relative z-20 aspect-video w-full object-contain bg-white border-b"
             />
             <CardHeader className="space-y-3">
                 <CardAction className="flex-wrap gap-2">
-                    <Badge variant="outline">Level {data.base_experience}</Badge>
+                    <Badge variant="outline">Level {pokemon.base_experience}</Badge>
                 </CardAction>
-                <CardTitle className="capitalize">{data.name}</CardTitle>
+                <CardTitle className="capitalize">{pokemon.name}</CardTitle>
                 <CardDescription className="flex gap-2">
-                    {data.types.map((type) => (
+                    {pokemon.types.map((type) => (
                         <Badge
                             key={type.slot}
                             className={`${typeColors[type.type.name] || 'bg-gray-400'} text-white capitalize`}
@@ -58,7 +35,7 @@ export default function PokemonCard({ name, url }: PokemonCardProps) {
                         <ItemTitle>Abilities</ItemTitle>
                         <ItemDescription>
                             <div className="flex gap-2">
-                                {data.abilities.map((ability) => (
+                                {pokemon.abilities.map((ability) => (
                                     <Badge
                                         key={ability.slot}
                                         variant={'outline'}

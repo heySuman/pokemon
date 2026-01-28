@@ -1,10 +1,13 @@
-import { useState } from "react";
 import { Search } from "lucide-react";
+import { Activity, useState } from "react";
 import { Field } from "@/components/ui/field";
+import { AlertCircleIcon } from "lucide-react"
 import { Spinner } from "@/components/ui/spinner";
 import { createFileRoute } from "@tanstack/react-router";
-import { usePokemonGrid } from "@/hooks/use-pokemon";
+import SearchCard from "@/components/landing-page/search-card";
 import PokemonCard from "@/components/landing-page/pokemon-card";
+import { usePokemonGrid, usePokemonSearch } from "@/hooks/use-pokemon";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { PaginationCustom as Pagination } from "@/components/landing-page/pagination";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 
@@ -16,6 +19,9 @@ function App() {
 
   const [limit, setLimit] = useState<number>(10);
   const [offset, setOffset] = useState<number>(0);
+  const [name, setName] = useState<string>('');
+  const [isSearchMode, setIsSearchMode] = useState(false)
+
 
   const handlePrevious = () => {
     setOffset(prev => Math.max(prev - limit, 0))
@@ -25,7 +31,15 @@ function App() {
     setOffset(prev => prev + limit)
   }
 
-  const { data, isLoading } = usePokemonGrid({ limit, offset })
+  const { data, isLoading } = usePokemonGrid({ limit, offset });
+  const { data: pokemon, isLoading: isSearching, error, refetch } = usePokemonSearch({ name })
+
+  const handleKeyDown = (key: string) => {
+    if (key === 'Enter' && name.trim()) {
+      setIsSearchMode(true)
+      refetch()
+    }
+  }
 
   return (
     <main className="container p-4 space-y-4 mx-auto">
@@ -33,31 +47,63 @@ function App() {
       {/* Searchbar */}
       <Field className="max-w-lg mx-auto">
         <InputGroup>
-          <InputGroupInput id="pokemon-search" placeholder="pikachu" className="" />
+          <InputGroupInput
+            id="pokemon-search"
+            placeholder="pikachu"
+            value={name}
+            onChange={(e) => {
+              const value = e.target.value
+              setName(value)
+              if (!value) setIsSearchMode(false)
+            }}
+            onKeyDown={(e) => handleKeyDown(e.key)} />
           <InputGroupAddon align="inline-start">
             <Search />
           </InputGroupAddon>
         </InputGroup>
       </Field>
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-auto">
+      {isSearchMode && (
+        <>
+          {isSearching && (
+            <div className="flex justify-center">
+              <Spinner />
+            </div>
+          )}
 
-        {isLoading && !data && (
-          <div className="flex items-center gap-2 justify-center mx-auto">
-            <Spinner /> Loading...
-          </div>
-        )}
+          {pokemon && !isSearching && <SearchCard pokemon={pokemon} />}
 
-        {data && data.results.map((card) => (
-          <PokemonCard name={card.name} url={card.url} key={card.name} />
-        ))}
-      </section>
+          {error && (
+            <Alert variant="destructive" className="max-w-md mx-auto">
+              <AlertCircleIcon />
+              <AlertTitle>{(error as Error)?.message || 'No Pokémon found'}</AlertTitle>
+              <AlertDescription>
+                Please try another Pokemon name
+              </AlertDescription>
+            </Alert>
+          )}
+        </>
+      )}
 
-      <Pagination
-        handleNext={handleNext}
-        handlePrevious={handlePrevious}
-        offset={offset}
-        setRows={setLimit} />
+
+      <Activity mode={isSearchMode ? 'hidden' : 'visible'}>
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-auto">
+          {isLoading && !data && (
+            <div className="flex items-center gap-2 justify-center mx-auto w-fit">
+              <Spinner /> Loading...
+            </div>
+          )}
+
+          {data && data.results.map((card) => (
+            <PokemonCard name={card.name} url={card.url} key={card.name} />
+          ))}
+        </section>
+        <Pagination
+          handleNext={handleNext}
+          handlePrevious={handlePrevious}
+          offset={offset}
+          setRows={setLimit} />
+      </Activity>
     </main>
   )
 }
