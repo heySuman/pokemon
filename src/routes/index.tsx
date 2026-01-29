@@ -1,6 +1,4 @@
-import { Search } from "lucide-react";
 import { Activity, useState } from "react";
-import { Field } from "@/components/ui/field";
 import { AlertCircleIcon } from "lucide-react"
 import { Spinner } from "@/components/ui/spinner";
 import { createFileRoute } from "@tanstack/react-router";
@@ -9,7 +7,7 @@ import PokemonCard from "@/components/landing-page/pokemon-card";
 import { usePokemonGrid, usePokemonSearch } from "@/hooks/use-pokemon";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { PaginationCustom as Pagination } from "@/components/landing-page/pagination";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute('/')({
   component: App
@@ -43,23 +41,19 @@ function App() {
 
   return (
     <main className="container p-4 space-y-4 mx-auto">
-      <Field className="max-w-lg mx-auto">
-        <InputGroup>
-          <InputGroupInput
-            id="pokemon-search"
-            placeholder="pikachu"
-            value={name}
-            onChange={(e) => {
-              const value = e.target.value
-              setName(value)
-              if (!value) setIsSearchMode(false)
-            }}
-            onKeyDown={(e) => handleKeyDown(e.key)} />
-          <InputGroupAddon align="inline-start">
-            <Search />
-          </InputGroupAddon>
-        </InputGroup>
-      </Field>
+      <div className="w-full flex justify-center">
+        <Input
+          id="pokemon-search"
+          placeholder="e.g pikachu"
+          value={name}
+          className="max-w-xl w-full"
+          onChange={(e) => {
+            const value = e.target.value
+            setName(value)
+            if (!value) setIsSearchMode(false)
+          }}
+          onKeyDown={(e) => handleKeyDown(e.key)} />
+      </div>
 
       {isSearchMode && (
         <>
