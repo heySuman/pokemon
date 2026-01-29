@@ -1,13 +1,13 @@
 import { Activity, useState } from "react";
-import { AlertCircleIcon } from "lucide-react"
+import { Input } from "@/components/ui/input";
+import { AlertCircleIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { createFileRoute } from "@tanstack/react-router";
 import SearchCard from "@/components/landing-page/search-card";
 import PokemonCard from "@/components/landing-page/pokemon-card";
 import { usePokemonGrid, usePokemonSearch } from "@/hooks/use-pokemon";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PaginationCustom as Pagination } from "@/components/landing-page/pagination";
-import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute('/')({
   component: App

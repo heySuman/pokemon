@@ -1,17 +1,22 @@
 import { Badge } from "../ui/badge"
+import { Button } from "../ui/button"
 import { SkeletonCard } from "./loading-card"
 import { typeColors } from "@/lib/pokemon-type"
 import { usePokemon } from "@/hooks/use-pokemon"
 import { Item, ItemContent, ItemDescription, ItemTitle } from "../ui/item"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Heart } from "lucide-react"
+import { useFavorite } from "@/store/favorite"
 
 interface PokemonCardProps {
     name: string,
-    url: string
+    url: string,
 }
 
 export default function PokemonCard({ name, url }: PokemonCardProps) {
     const { data, isLoading, error } = usePokemon({ name, url });
+    const { addToFavorite, removeFavorite, isFavorite } = useFavorite();
+
 
     if (isLoading) return <SkeletonCard />
 
@@ -28,6 +33,14 @@ export default function PokemonCard({ name, url }: PokemonCardProps) {
 
     if (!data) return null;
 
+    const handleFavorite = () => {
+        if (isFavorite(name)) {
+            removeFavorite(name)
+        } else {
+            addToFavorite(data)
+        }
+    }
+
     return (
         <Card className="relative mx-auto w-full max-w-sm aspect-3/4 overflow-hidden rounded-2xl border bg-white/30 backdrop-blur-xl text-white">
 
@@ -37,6 +50,15 @@ export default function PokemonCard({ name, url }: PokemonCardProps) {
                     Level {data.base_experience}
                 </Badge>
             </div>
+
+            {/* Level Hahaha */}
+            <Button
+                size={'icon-lg'}
+                variant={'ghost'}
+                onClick={handleFavorite}
+                className="absolute top-4 right-4 z-100">
+                <Heart fill={isFavorite(name) ? "red" : ""} className="h-8 w-8" size={32} />
+            </Button>
 
             <img
                 src={
