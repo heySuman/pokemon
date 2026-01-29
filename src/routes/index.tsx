@@ -1,8 +1,8 @@
 import { Activity, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { AlertCircleIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
-import { createFileRoute } from "@tanstack/react-router";
+import { AlertCircleIcon, Heart } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import SearchCard from "@/components/landing-page/search-card";
 import PokemonCard from "@/components/landing-page/pokemon-card";
 import { usePokemonGrid, usePokemonSearch } from "@/hooks/use-pokemon";
@@ -41,18 +41,21 @@ function App() {
 
   return (
     <main className="container p-4 space-y-4 mx-auto">
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center items-center gap-2">
         <Input
           id="pokemon-search"
           placeholder="e.g pikachu"
           value={name}
-          className="max-w-xl w-full"
+          className="max-w-xl m-0"
           onChange={(e) => {
             const value = e.target.value
             setName(value)
             if (!value) setIsSearchMode(false)
           }}
           onKeyDown={(e) => handleKeyDown(e.key)} />
+        <Link to="/favorite">
+          <Heart />
+        </Link>
       </div>
 
       {isSearchMode && (
