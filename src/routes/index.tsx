@@ -43,8 +43,6 @@ function App() {
 
   return (
     <main className="container p-4 space-y-4 mx-auto">
-
-      {/* Searchbar */}
       <Field className="max-w-lg mx-auto">
         <InputGroup>
           <InputGroupInput
@@ -85,9 +83,8 @@ function App() {
         </>
       )}
 
-
       <Activity mode={isSearchMode ? 'hidden' : 'visible'}>
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-auto">
+        <section className="max-w-5xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mx-auto">
           {isLoading && !data && (
             <div className="flex items-center gap-2 justify-center mx-auto w-fit">
               <Spinner /> Loading...
